@@ -52,6 +52,7 @@ package chart triton:
 
 deploy charts:
   stage: deploy
+  image: registry.gitlab.com/promethistai/system/deployer
   script:
     - cd $REPO_DIR
     - helm3 repo index
