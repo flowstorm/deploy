@@ -1,0 +1,66 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "10"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-body-size: "256m"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+spec:
+  tls:
+    - hosts:
+        - admin{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.promethist.com
+        - admin{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.flowstorm.ai
+        - app{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.flowstorm.ai
+      secretName: {{ .Values.name }}-tls
+  rules:
+    - host: admin{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.promethist.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.name }}
+                port:
+                  number: 8080
+          - path: /apidoc
+            pathType: Prefix
+            backend:
+              service:
+                name: apidoc
+                port:
+                  number: 80
+    - host: admin{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.flowstorm.ai
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.name }}
+                port:
+                  number: 8080
+          - path: /apidoc
+            pathType: Prefix
+            backend:
+              service:
+                name: apidoc
+                port:
+                  number: 80
+    - host: app{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.flowstorm.ai
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway
+                port:
+                  number: 80

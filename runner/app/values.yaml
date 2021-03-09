@@ -1,0 +1,35 @@
+namespace: default
+name: flowstorm-runner
+replicas: 2
+imagePullSecrets: promethistai-registry
+imagePullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  app:
+    port: 80
+app:
+  port: 8080
+  image:
+    name: registry.gitlab.com/promethistai/flowstorm/runner/app
+    tag: latest
+  mem: 1024
+  resources:
+    requests:
+      cpu: 0.01
+      memory: 1024Mi
+  logging: "FALSE"
+  tracing: "OFF"
+slack:
+  enable: true
+git:
+  ref: branch_or_tag
+  commit: short_sha
+sender:
+  from:
+    email: "app@flowstorm.ai"
+    name: "Flowstorm App"
+jwtauth:
+  issuer: "https://auth.flowstorm.ai/"
+  verify: "true"
+sentry:
+  dsn: https://d30aa3d00ecc473b8567cfe529151c87@o318069.ingest.sentry.io/1824889

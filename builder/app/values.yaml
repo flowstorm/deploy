@@ -1,0 +1,28 @@
+namespace: default
+name: flowstorm-builder
+replicas: 2
+imagePullSecrets: promethistai-registry
+imagePullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  app:
+    port: 80
+app:
+  port: 8080
+  image:
+    name: registry.gitlab.com/promethistai/promethist/builder/app
+    tag: latest
+  mem: 512
+  resources:
+    requests:
+      cpu: 0.01
+      memory: 512Mi
+  logging: "FALSE"
+  tracing: "OFF"
+git:
+  ref: branch_or_tag
+  commit: short_sha
+sentry:
+  dsn: https://d30aa3d00ecc473b8567cfe529151c87@o318069.ingest.sentry.io/1824889
+illusionist:
+  approach: logistic
