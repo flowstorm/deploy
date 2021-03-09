@@ -1,20 +1,56 @@
 stages:
   - package
+  - deploy
 
-package charts:
+.package chart:
   stage: package
   image: registry.gitlab.com/promethistai/system/deployer
+  variables:
+    NAME: xxx
   only:
     refs:
       - tags
   script:
-    - sed -i -- "s/chart.version/$CI_COMMIT_SHORT_SHA/g; s/app.version/$CI_COMMIT_REF_NAME/g" admin/app/Chart.yaml
-    - sed -i -- "s/chart.version/$CI_COMMIT_SHORT_SHA/g; s/app.version/$CI_COMMIT_REF_NAME/g" triton/app/Chart.yaml
-    - sed -i -- "s/chart.version/$CI_COMMIT_SHORT_SHA/g; s/app.version/$CI_COMMIT_REF_NAME/g" runner/app/Chart.yaml
-    - sed -i -- "s/chart.version/$CI_COMMIT_SHORT_SHA/g; s/app.version/$CI_COMMIT_REF_NAME/g" builder/app/Chart.yaml
-    - helm3 package admin/app
-    - helm3 package triton/app
-    - helm3 package runner/app
-    - helm3 package builder/app
+    - sed -i -- "s/chart.version/$CI_COMMIT_SHORT_SHA/g; s/app.version/$CI_COMMIT_REF_NAME/g" $NAME/Chart.yaml
+    - helm3 package $NAME
+
+package chart admin:
+  extends: '.package chart'
+  variables:
+    NAME: admin
+  only:
+    changes:
+      - admin/**/*
+
+package chart runner:
+  extends: '.package chart'
+  variables:
+    NAME: runner
+  only:
+    changes:
+      - runner/**/*
+
+package chart builder:
+  extends: '.package chart'
+  variables:
+    NAME: builder
+  only:
+    changes:
+      - builder/**/*
+
+package chart triton:
+  extends: '.package chart'
+  variables:
+    NAME: triton
+  only:
+    changes:
+      - triton/**/*
+
+deploy charts:
+  stage: deploy
+  variables:
+    REPO_DIR: /ext/cluster/default/default/repository/helm
+  script:
+    - cp *.tgz $REPO_DIR
+    - cd $REPO_DIR
     - helm3 repo index
-    - cp index.yaml *.tgz /ext/cluster/default/default/repository/helm
