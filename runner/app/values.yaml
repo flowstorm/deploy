@@ -3,6 +3,7 @@ name: flowstorm-runner
 replicas: 2
 imagePullSecrets: promethistai-registry
 imagePullPolicy: IfNotPresent
+basedomain: flowstorm.ai
 service:
   type: ClusterIP
   app:
@@ -31,5 +32,3 @@ sender:
 jwtauth:
   issuer: "https://auth.flowstorm.ai/"
   verify: "true"
-sentry:
-  dsn: https://d30aa3d00ecc473b8567cfe529151c87@o318069.ingest.sentry.io/1824889

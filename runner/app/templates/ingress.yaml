@@ -17,64 +17,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - {{ if ne .Values.namespace "default" }}{{ .Values.namespace }}.{{ end }}promethist.com
-        - port{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.promethist.com
-        - core{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.promethist.com
-        - core{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.flowstorm.ai
+        - core{{ if ne .Values.namespace "default" }}-{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
       secretName: {{ .Values.name }}-tls
   rules:
-    - host: {{ if ne .Values.namespace "default" }}{{ .Values.namespace }}.{{ end }}promethist.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Values.name }}
-                port:
-                  number: 8080
-    - host: port{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.promethist.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Values.name }}
-                port:
-                  number: 8080
-          - path: /apidoc
-            pathType: Prefix
-            backend:
-              service:
-                name: apidoc
-                port:
-                  number: 80
-    - host: core{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.promethist.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Values.name }}
-                port:
-                  number: 8080
-          - path: /builder
-            pathType: Prefix
-            backend:
-              service:
-                name: flowstorm-builder
-                port:
-                  number: 8080
-          - path: /apidoc
-            pathType: Prefix
-            backend:
-              service:
-                name: apidoc
-                port:
-                  number: 80
-    - host: core{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.flowstorm.ai
+    - host: core{{ if ne .Values.namespace "default" }}-{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
       http:
         paths:
           - path: /

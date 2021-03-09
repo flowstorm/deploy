@@ -15,12 +15,11 @@ metadata:
 spec:
   tls:
     - hosts:
-        - admin{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.promethist.com
-        - admin{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.flowstorm.ai
-        - app{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.flowstorm.ai
+        - admin{{ if ne .Values.namespace "default" }}-{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
+        - app{{ if ne .Values.namespace "default" }}-{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
       secretName: {{ .Values.name }}-tls
   rules:
-    - host: admin{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.promethist.com
+    - host: admin{{ if ne .Values.namespace "default" }}-{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
       http:
         paths:
           - path: /
@@ -37,24 +36,7 @@ spec:
                 name: apidoc
                 port:
                   number: 80
-    - host: admin{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.flowstorm.ai
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Values.name }}
-                port:
-                  number: 8080
-          - path: /apidoc
-            pathType: Prefix
-            backend:
-              service:
-                name: apidoc
-                port:
-                  number: 80
-    - host: app{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.flowstorm.ai
+    - host: app{{ if ne .Values.namespace "default" }}-{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
       http:
         paths:
           - path: /

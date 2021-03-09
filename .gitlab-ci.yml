@@ -1,0 +1,20 @@
+stages:
+  - package
+
+package charts:
+  stage: package
+  image: registry.gitlab.com/promethistai/system/deployer
+  only:
+    refs:
+      - tags
+  script:
+    - sed -i -- "s/chart.version/$CI_COMMIT_SHORT_SHA/g; s/app.version/$CI_COMMIT_REF_NAME/g" admin/app/Chart.yaml
+    - sed -i -- "s/chart.version/$CI_COMMIT_SHORT_SHA/g; s/app.version/$CI_COMMIT_REF_NAME/g" triton/app/Chart.yaml
+    - sed -i -- "s/chart.version/$CI_COMMIT_SHORT_SHA/g; s/app.version/$CI_COMMIT_REF_NAME/g" runner/app/Chart.yaml
+    - sed -i -- "s/chart.version/$CI_COMMIT_SHORT_SHA/g; s/app.version/$CI_COMMIT_REF_NAME/g" builder/app/Chart.yaml
+    - helm3 package admin/app
+    - helm3 package triton/app
+    - helm3 package runner/app
+    - helm3 package builder/app
+    - helm3 repo index
+    - cp index.yaml *.tgz /ext/cluster/default/default/repository/helm

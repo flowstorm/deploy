@@ -1,6 +1,7 @@
 namespace: default
 name: flowstorm-admin
 replicas: 2
+basedomain: flowstorm.ai
 imagePullSecrets: promethistai-registry
 imagePullPolicy: IfNotPresent
 service:
@@ -31,7 +32,3 @@ sender:
 jwtauth:
   issuer: "https://auth.flowstorm.ai/"
   verify: "true"
-illusionist:
-  approach: logistic
-sentry:
-  dsn: https://d30aa3d00ecc473b8567cfe529151c87@o318069.ingest.sentry.io/1824889

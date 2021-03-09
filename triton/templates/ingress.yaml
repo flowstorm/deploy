@@ -15,11 +15,11 @@ metadata:
 spec:
   tls:
     - hosts:
-        - triton{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
-        - metrics.triton{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
+        - triton{{ if ne .Values.namespace "default" }}-{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
+        - metrics.triton{{ if ne .Values.namespace "default" }}-{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
       secretName: {{ .Values.name }}-tls
   rules:
-    - host: triton{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
+    - host: triton{{ if ne .Values.namespace "default" }}-{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
       http:
         paths:
           - path: /
@@ -29,7 +29,7 @@ spec:
                 name: {{ .Values.name }}
                 port:
                   number: 8000
-    - host: grpc.triton{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
+    - host: grpc.triton{{ if ne .Values.namespace "default" }}-{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
       http:
         paths:
           - path: /
@@ -39,7 +39,7 @@ spec:
                 name: {{ .Values.name }}
                 port:
                   number: 8001
-    - host: metrics.triton{{ if ne .Values.namespace "default" }}.{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
+    - host: metrics.triton{{ if ne .Values.namespace "default" }}-{{ .Values.namespace }}{{ end }}.{{ .Values.basedomain }}
       http:
         paths:
           - path: /
