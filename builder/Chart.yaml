@@ -2,4 +2,4 @@ apiVersion: v1
 name: flowstorm-builder
 version: "chart.version"
 description: Flowstorm Builder Helm Chart
-appVersion: "app.version"
+appVersion: latest

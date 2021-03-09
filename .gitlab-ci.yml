@@ -2,6 +2,9 @@ stages:
   - package
   - deploy
 
+variables:
+  REPO_DIR: /ext/cluster/default/default/repository/helm
+
 .package chart:
   stage: package
   image: registry.gitlab.com/promethistai/system/deployer
@@ -11,8 +14,9 @@ stages:
     refs:
       - tags
   script:
-    - sed -i -- "s/chart.version/$CI_COMMIT_SHORT_SHA/g; s/app.version/$CI_COMMIT_REF_NAME/g" $NAME/Chart.yaml
+    - sed -i -- "s/chart.version/$CI_COMMIT_REF_NAME/g" $NAME/Chart.yaml
     - helm3 package $NAME
+    - cp *.tgz $REPO_DIR
 
 package chart admin:
   extends: '.package chart'
@@ -48,9 +52,6 @@ package chart triton:
 
 deploy charts:
   stage: deploy
-  variables:
-    REPO_DIR: /ext/cluster/default/default/repository/helm
   script:
-    - cp *.tgz $REPO_DIR
     - cd $REPO_DIR
     - helm3 repo index

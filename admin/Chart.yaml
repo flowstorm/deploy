@@ -2,4 +2,4 @@ apiVersion: v1
 name: promethist-admin
 version: "chart.version"
 description: Promethist Admin Helm Chart
-appVersion: "app.version"
+appVersion: latest
